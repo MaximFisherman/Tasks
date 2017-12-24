@@ -1,0 +1,16 @@
+	char str[] = "Hello mia";
+	char *pch;
+	char point[256] = "";
+	printf("Turning words in string:\"%s\"\n", str);
+	pch = strtok(str, " ,.-");
+
+	while (pch != NULL) {
+		char *tmp = new char[strlen(pch)];
+		strcpy(tmp, pch);
+		strrev(tmp);
+		strcat(point, tmp);
+		strcat(point, " ");
+		pch = strtok(NULL, " ,.-:?");
+	}
+	printf("%s\n", point);
+	system("pause");
