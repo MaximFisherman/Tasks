@@ -1,0 +1,216 @@
+Необходимо разработать программу, которая предоставляет удобный функционал для работы с разреженной матрицей. Разреженная матрица — матрица с большим количеством нулевых элементов. Требуется написать следующие функции:
+
+Ввода матрицы;
+Печати матрицы;
+Суммирования двух матриц;
+Умножения двух матриц.
+Представлять матрицы можно в виде списка или в виде динамического массива
+
+
+// Test.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include "iostream"
+#include <random>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+template <typename T>
+class Matrix
+{
+protected:
+	int n;
+	int m;
+
+private:
+	vector<T> matrix;
+
+
+	template <typename T1>
+	friend Matrix<T1> operator + (const Matrix<T1>& left, const Matrix<T1>& right);
+
+	template <typename T2>
+	friend Matrix<T2> operator * (const Matrix<T2>& left, const Matrix<T2>& right);
+
+	template <typename T3>
+	friend ostream& operator << (ostream& os, const Matrix<T3>& right);
+
+	template <typename T4>
+	friend istream& operator >> (istream& is, Matrix<T4>& right);
+};
+
+int main()
+{
+	Matrix<int> matrix1,matrix2;
+	//Enter matrix
+	cin >> matrix1;
+	cin >> matrix2;
+
+	//View matrix
+	cout << matrix1;
+	cout << matrix2;
+
+    matrix1 = (matrix1 + matrix2); // Sum matrix
+	cout << matrix1;
+	matrix1 = (matrix1 * matrix2); // Multiplication matrix
+	cout << matrix1;
+
+	system("pause");
+    return 0;
+}
+
+
+
+template<typename T2>
+Matrix<T2> operator * (const Matrix<T2>& left, const Matrix<T2>& right) {
+	Matrix<T2> matrix;
+
+	// Check which left matrix is larger then right matrix
+	if ((left.m * left.n) >= (right.m * right.n))
+	{
+		for (int i = 0; i < left.n; i++)
+		{
+			for (int j = 0; j < left.m; j++)
+			{
+				matrix.matrix.push_back(left.matrix[(i)* left.m + j]);
+			}
+		}
+
+		//Set size matrix
+		matrix.n = left.n;
+		matrix.m = left.m;
+
+		for (int i = 0; i < right.n; i++)
+		{
+			for (int j = 0; j < right.m; j++)
+			{
+				matrix.matrix[(i)* left.m + j] = (left.matrix[(i) * left.m + j] * right.matrix[(i) * right.m + j]);
+			}
+		}
+	}
+
+	// Check which right matrix is larger then left matrix
+	if ((left.m * left.n) < (right.m * right.n))
+	{
+		for (int i = 0; i < right.n; i++)
+		{
+			for (int j = 0; j < right.m; j++)
+			{
+				matrix.matrix.push_back(right.matrix[(i) * right.m + j]);
+			}
+		}
+
+		//Set size matrix
+		matrix.n = right.n;
+		matrix.m = right.m;
+
+		for (int i = 0; i < left.n; i++)
+		{
+			for (int j = 0; j < left.m; j++)
+			{
+				matrix.matrix[(i) * left.m + j] = (left.matrix[(i) * left.m + j] * right.matrix[(i) * right.m + j]);
+			}
+		}
+	}
+
+	return matrix;
+}
+
+template <typename T1>
+Matrix<T1> operator + (const Matrix<T1>& left, const Matrix<T1>& right) {
+	Matrix<T1> matrix;
+
+	// Check which left matrix is larger then right matrix
+	if ((left.m * left.n) >= (right.m * right.n))
+	{
+		for (int i = 0; i < left.n; i++)
+		{
+			for (int j = 0; j < left.m; j++)
+			{
+				matrix.matrix.push_back(left.matrix[(i)* left.m + j]);
+			}
+		}
+
+		//Set size matrix
+		matrix.n = left.n;
+		matrix.m = left.m;
+
+		for (int i = 0; i < right.n; i++)
+		{
+			for (int j = 0; j < right.m; j++)
+			{
+				matrix.matrix[(i)* left.m + j] = (left.matrix[(i)* left.m + j] + right.matrix[(i)* right.m + j]);
+			}
+		}
+	}
+
+	// Check which right matrix is larger then left matrix
+	if ((left.m * left.n) < (right.m * right.n))
+	{
+		for (int i = 0; i < right.n; i++)
+		{
+			for (int j = 0; j < right.m; j++)
+			{
+				matrix.matrix.push_back(right.matrix[(i)* right.m + j]);
+			}
+		}
+
+		//Set size matrix
+		matrix.n = right.n;
+		matrix.m = right.m;
+
+		for (int i = 0; i < left.n; i++)
+		{
+			for (int j = 0; j < left.m; j++)
+			{
+				matrix.matrix[(i)* left.m + j] = (left.matrix[(i)* left.m + j] + right.matrix[(i)* right.m + j]);
+			}
+		}
+	}
+
+	return matrix;
+}
+
+template <typename T3>
+ostream & operator<<(ostream & os, const Matrix<T3>& right)
+{
+	for (int i = 0; i < right.n; i++)
+	{
+		for (int j = 0; j < right.m; j++)
+		{
+			os << right.matrix[(i)* right.m + j] << " ";
+		}
+		os << endl;
+	}
+	os << endl;
+	return os;
+}
+
+template<typename T4>
+istream & operator >> (istream & is, Matrix<T4>& right)
+{
+	//Random generation number for enter
+		//mt19937 gen(time(0));
+	T4 number = 0;
+
+	cout << "Please enter count of lines: "; is >> right.n;
+	cout << "Please enter count of columns:"; is >> right.m; 
+
+	for (int i = 0; i < right.n; i++)
+	{
+		for (int j = 0; j < right.m; j++)
+		{
+			//Random generation number for enter
+				//uniform_int_distribution<int> uid(0, 2 + 6);
+				//random = uid(gen);
+
+			cout << "Enter number: ";
+
+			is >> number;
+			right.matrix.push_back(number);
+		}
+	}
+	return is;
+}
