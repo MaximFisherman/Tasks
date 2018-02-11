@@ -1,0 +1,62 @@
+#include "stdafx.h"
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <stdio.h>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+class Game
+{
+protected:
+	int countHero;
+public: 
+	Game() { countHero = 0; };
+	void Run(){ cout << "countHero = " << countHero; };
+};
+
+class Base : public Game
+{
+public:
+	virtual void animate() {};
+	virtual void damage() {};
+};
+
+class Hero : public Base
+{
+public:
+	Hero() { };
+	void animate() {};
+	void damage() {};
+
+};
+
+class Usuruki : public Hero
+{
+private:
+	int helth;
+public:
+	Usuruki() { helth = 10; countHero++;  };
+	void animate() { cout << "Animate usuruki" << endl; };
+	void damage() { cout << "Damage Usuruki: " << helth<<endl; };
+	~Usuruki() {};
+};
+
+vector<Base*> F() {
+	vector<Base*> temp = { new Usuruki };
+	return temp;
+}
+
+int main() {
+	Hero* hero = new Usuruki;
+	Game* game = hero;
+	
+	vector<Base*> v = F();
+	
+	game->Run();
+	system("pause");
+	return 0;
+}
