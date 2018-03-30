@@ -1,0 +1,94 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+#include <exception> 
+#include <vector>
+#include <map>
+#include <memory>
+#include <cassert>
+#include <new>
+#include <cstddef>
+#include <thread>
+#include <cassert>
+#include <algorithm>  
+#include <cmath> 
+using namespace std;
+
+/**
+ * Auto-generated code below aims at helping you parse
+ * the standard input according to the problem statement.
+ **/
+int main()
+{
+    int n; // the number of temperatures to analyse
+    vector<int> vectTemperature;
+    cin >> n; cin.ignore();
+    for (int i = 0; i < n; i++) {
+        int t; // a temperature expressed as an integer ranging from -273 to 5526
+        cin >> t; cin.ignore();
+        vectTemperature.push_back(t);
+    }
+
+    copy(begin(vectTemperature), end(vectTemperature), ostream_iterator<int>(std::cerr, " "));
+    // Write an action using cout. DON'T FORGET THE "<< endl"
+    int pos = 0;
+    int min;
+	if (!vectTemperature.empty())
+	{
+		vector<int>::iterator minIt = find_if(begin(vectTemperature), end(vectTemperature), [](int x) { return x>0; });
+		int max = *find_if(begin(vectTemperature), end(vectTemperature), [](int x) { return x<0; });
+		if (minIt != vectTemperature.end())
+			min = *minIt;
+
+		int pos_min = distance(begin(vectTemperature), std::find(begin(vectTemperature), end(vectTemperature), min));
+		int pos_max = distance(begin(vectTemperature), std::find(begin(vectTemperature), end(vectTemperature), max));
+
+		for_each(begin(vectTemperature), end(vectTemperature), [&pos_min, &pos_max, &min, &max, &vectTemperature](int x) {
+			static int i = 0;
+			if (x > 0)
+			{
+				if (min > x)
+				{
+					min = x;
+					pos_min = i;
+				}
+			}
+
+			if (x < 0)
+			{
+				if (max < x)
+				{
+					max = x;
+					pos_max = i;
+				}
+			}
+			i++;
+		});
+        
+       
+		if ((0 - abs(vectTemperature[pos_min])) >= (0 - abs(vectTemperature[pos_max])))
+		{
+			pos = pos_min;
+			cerr << endl<< pos << endl;
+		}
+		else{
+		    cerr << endl << pos << endl;
+			pos = pos_max;
+		}
+		
+		 if(vectTemperature[pos_min] == 0)
+            pos = pos_max;
+        if(vectTemperature[pos_max] == 0)
+            pos = pos_min;
+            
+		cout << vectTemperature[pos] << endl;
+	}else {
+	    cout << 0;
+	}
+	//cout << vectTemperature[pos] << endl;
+	//cout << vectTemperature[pos] << endl;
+    // To debug: cerr << "Debug messages..." << endl;
+}
