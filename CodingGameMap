@@ -1,0 +1,194 @@
+/* 
+Не работает по крайней мере пока, надо использовать алгоритм дейкстры
+*/
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <bitset>
+#include <algorithm>
+#include <iterator>
+#include "Test.h"
+using namespace std;
+
+class Map
+{
+private:
+	struct DATA {
+		DATA(int _x1, int _x2) : x1(_x1), x2(_x2) {};
+		int x1;
+		int x2;
+	};
+
+	vector<vector<int>> trees;
+	vector<int> EI;
+	vector<int> GET_TREE_NODE;
+	size_t sizeTree;
+	vector<int> used_vertex;
+
+public:
+	vector<int> detour(int st) {
+		//Алгоритм Дейкстры - находит расстояние вершины номер st
+		//графа trees размерностью V	до всех остальных
+		//Вернет массив расстояний, INT_MAX - прохода нет
+		int count, index, i, u;
+
+		vector<int> distance(sizeTree);
+		bool *visited;
+		visited = new bool[sizeTree];
+		for (i = 0; i < sizeTree; i++) { distance[i] = 10000000; visited[i] = false; }
+		distance[st] = 0;
+
+		for (count = 0; count < sizeTree - 1; count++) {
+			int min = 10000000;
+			for (i = 0; i < sizeTree; i++)
+				if (!visited[i] && distance[i] <= min) { min = distance[i]; index = i; }
+			u = index;
+			visited[u] = true;
+			for (i = 0; i < sizeTree; i++)
+				if (!visited[i] && trees[u][i] && distance[u] != 10000000 && distance[u] + trees[u][i] < distance[i])
+					distance[i] = distance[u] + trees[u][i];
+		}
+
+		return distance;
+	}
+
+	void EIpush(int _EI)
+	{
+		EI.push_back(_EI);
+	}
+
+	void searchDoubleMoveEnemy(int element)
+	{
+		cerr << "start" << endl;
+		vector<int> distanceEnemy = detour(element);
+
+		vector<vector<int>> distanceNode;
+		vector<vector<int>> distanceEI;
+
+
+		map<int, int> minEI; // min distance to gateway 																																		//знаю на что похоже :)
+		for (size_t i = 0; i < EI.size(); i++)
+		{
+			for (size_t j = 0; j < sizeTree; j++)
+			{
+				minEI.insert(std::pair<int,int>(EI[i], distanceEnemy[EI[i]]));
+			}	
+		}
+
+		/********************************************************/
+		/* 
+			will need add select minimal distance in minEI and 
+			that minimal gatewey blocked
+		*/
+
+		for (auto x : minEI)
+		{
+			cout << x.first << " " << x.second << endl;
+		}
+		/*for (size_t i = 0; i < GET_TREE_NODE.size(); i++)
+		{
+			for (size_t j = 0; j < sizeTree; j++)
+			{
+				for (size_t k = 0; k < distanceEI.size(); k++)
+				{
+
+				}
+				if(distanceNode[i][EI[]] == 
+			}
+		}*/
+	}
+
+	void move(int element)
+	{
+		//vector<DATA> way;
+		//vector<int> distance = detour(element);
+
+
+		searchDoubleMoveEnemy(element);
+
+		//vector<int> resD(distance);
+		//int i = 0;
+		//for (i = 0; i < distance.size(); i++)
+		//	if (distance[i] != 10000000 && distance[i] != 0)
+		//	{
+		//		// if enemy nearly mask
+		//		for (size_t j = 0; j < EI.size(); j++)
+		//		{
+		//			if (distance[EI[j]] == 1) {
+		//				cout <<EI[j] <<  " "<< element << endl;
+		//			}
+		//			else if (distance) {
+
+		//			}
+		//		}
+		//	}
+		//	else cerr << i << " = " << "Not have route" << endl;
+	}
+
+	void View()
+	{
+		for (int i = 0; i < trees.size(); i++)
+		{
+			for (int j = 0; j < trees[i].size(); j++)
+			{
+				cout << trees[i][j] << " ";
+			}
+			cout << endl;
+		}
+	};
+
+	void Init()
+	{
+		vector<int> temp();
+
+		trees = std::vector< std::vector<int> >(sizeTree, std::vector<int>(sizeTree, 0));;
+		//cerr << trees.size() << " " << trees[1].size() << endl;
+		for (int i = 2; i < GET_TREE_NODE.size() + 1; i += 2)
+		{
+			//cerr << GET_TREE_NODE[i - 2] - 1 << " " << GET_TREE_NODE[i - 1] - 1 << endl;
+			trees[GET_TREE_NODE[i - 2]][GET_TREE_NODE[i - 1]] = 1;
+		}
+
+		//INIT used_vertex
+		for (size_t i = 0; i < trees.size(); i++)
+		{
+			used_vertex.push_back(0);
+		}
+	}
+
+	void Add_rib(int x1, int x2)
+	{
+		GET_TREE_NODE.push_back(x1);
+		GET_TREE_NODE.push_back(x2);
+		GET_TREE_NODE.push_back(x2);
+		GET_TREE_NODE.push_back(x1);
+		sizeTree = *std::max_element(GET_TREE_NODE.begin(), GET_TREE_NODE.end()) + 1;
+		//copy(begin(GET_TREE_NODE), end(GET_TREE_NODE), ostream_iterator<int>(std::cout, "; "));
+	};
+};
+
+
+int main()
+{
+	Map map;
+	map.Add_rib(1, 3);
+	map.Add_rib(2, 3);
+	map.Add_rib(0, 1);
+	map.Add_rib(0, 2);
+
+	map.Init();
+	map.EIpush(0);
+	//map.EIpush(1);
+	map.View();
+
+	//map.EIpush(3);
+	 map.move(3);
+	//map.search(2);
+	//map.search(1);
+
+
+	//map.search(2);
+
+	system("pause");
+	return 0;
+}
